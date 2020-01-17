@@ -1,0 +1,24 @@
+GET http://localhost:8888/api/projects
+Accept: application/json
+###
+GET http://localhost:8888/api/projects/1
+Accept: application/json
+###
+POST http://localhost:8888/api/projects
+Content-Type: application/json
+
+{
+  "title":"Spring",
+  "description":"Szkolenie ze Springa w ramach Akademii Sztuka Kodu"
+}
+###
+PUT http://localhost:8888/api/projects/1
+Content-Type: application/json
+
+{
+  "title":"Vaadin",
+  "description":"Zrobić wszystkie tutoriale na stronie vaadin.com"
+}
+###
+DELETE http://localhost:8888/api/projects/1
+###
