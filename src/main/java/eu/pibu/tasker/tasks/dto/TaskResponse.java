@@ -1,5 +1,6 @@
-package eu.pibu.tasker.tasks.boundary.dto;
+package eu.pibu.tasker.tasks.dto;
 
+import eu.pibu.tasker.attachments.dto.AttachmentResponse;
 import eu.pibu.tasker.tasks.entity.Task;
 import lombok.Data;
 

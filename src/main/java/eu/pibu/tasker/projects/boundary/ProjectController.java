@@ -1,9 +1,9 @@
 package eu.pibu.tasker.projects.boundary;
 
-import eu.pibu.tasker.projects.boundary.dto.CreateProjectRequest;
-import eu.pibu.tasker.projects.boundary.dto.ProjectResponse;
-import eu.pibu.tasker.projects.boundary.dto.UpdateProjectRequest;
 import eu.pibu.tasker.projects.control.ProjectService;
+import eu.pibu.tasker.projects.dto.CreateProjectRequest;
+import eu.pibu.tasker.projects.dto.ProjectResponse;
+import eu.pibu.tasker.projects.dto.UpdateProjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ class ProjectController {
     @GetMapping
     public ResponseEntity<?> getProjects() {
         log.info("Fetch all projects");
-        List<ProjectResponse> response = projectService.getAll().stream()
+        List<ProjectResponse> response = projectService.getAllProjects().stream()
                 .map(ProjectResponse::new)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
@@ -32,26 +32,26 @@ class ProjectController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getProject(@PathVariable Long id) {
         log.info("Fetch project with id: {}", id);
-        ProjectResponse response = new ProjectResponse(projectService.getById(id));
+        ProjectResponse response = new ProjectResponse(projectService.getProjectById(id));
         return ResponseEntity.ok(response);
     }
     @PostMapping
     public ResponseEntity<?> addProject(@RequestBody CreateProjectRequest request) {
         log.info("Create new project");
-        Long id = projectService.add(request);
+        Long id = projectService.addProject(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
         return ResponseEntity.created(location).build();
     }
     @PutMapping(path = "/{id}")
     public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody UpdateProjectRequest request) {
         log.info("Update project with id: {}", id);
-        projectService.update(id, request);
+        projectService.updateProject(id, request);
         return ResponseEntity.noContent().build();
     }
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         log.info("Delete project with id: {}", id);
-        projectService.deleteById(id);
+        projectService.deleteProjectById(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,4 +1,4 @@
-package eu.pibu.tasker.tasks.boundary.dto;
+package eu.pibu.tasker.tasks.dto;
 
 import lombok.Data;
 

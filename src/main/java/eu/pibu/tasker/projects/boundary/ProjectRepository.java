@@ -1,12 +1,9 @@
 package eu.pibu.tasker.projects.boundary;
 
 import eu.pibu.tasker.projects.entity.Project;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface ProjectRepository {
-    List<Project> findAll();
-    Project getById(Long id);
-    void create(Project project);
-    void deleteById(Long id);
+@Repository
+public interface ProjectRepository extends CrudRepository<Project, Long> {
 }

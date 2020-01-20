@@ -1,45 +1,43 @@
 package eu.pibu.tasker.projects.control;
 
 import eu.pibu.tasker.Clock;
+import eu.pibu.tasker.exceptions.NotFoundException;
 import eu.pibu.tasker.projects.boundary.ProjectRepository;
-import eu.pibu.tasker.projects.boundary.dto.CreateProjectRequest;
-import eu.pibu.tasker.projects.boundary.dto.UpdateProjectRequest;
+import eu.pibu.tasker.projects.dto.CreateProjectRequest;
+import eu.pibu.tasker.projects.dto.UpdateProjectRequest;
 import eu.pibu.tasker.projects.entity.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
     private final Clock clock;
-    private final AtomicLong idGenerator = new AtomicLong(1L);
     private final ProjectRepository projectRepository;
 
-    public List<Project> getAll() {
-        return projectRepository.findAll();
+    public List<Project> getAllProjects() {
+        return StreamSupport.stream(projectRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
-    public Project getById(Long id) {
-        return projectRepository.getById(id);
+    public Project getProjectById(Long id) {
+        return projectRepository.findById(id).orElseThrow(() -> new NotFoundException("Cannot find project with id: " + id));
     }
-    public Long add(String title, String description) {
-        Long id = idGenerator.getAndIncrement();
-        projectRepository.create(new Project(id, title, description, clock.time()));
-        return id;
+    public Long addProject(String name, String description) {
+        return projectRepository.save(new Project(name, description, clock.time())).getId();
     }
-    public Long add(CreateProjectRequest dto) {
-        Long id = idGenerator.getAndIncrement();
-        projectRepository.create(new Project(id, dto.getTitle(), dto.getDescription(), clock.time()));
-        return id;
+    public Long addProject(CreateProjectRequest dto) {
+        return projectRepository.save(new Project(dto.getName(), dto.getDescription(), clock.time())).getId();
     }
-    public void update(Long id, UpdateProjectRequest dto) {
-        Project project = getById(id);
-        project.setName(dto.getTitle());
+    public void updateProject(Long id, UpdateProjectRequest dto) {
+        Project project = getProjectById(id);
+        project.setName(dto.getName());
         project.setDescription(dto.getDescription());
+        projectRepository.save(project);
     }
-    public void deleteById(Long id) {
-        projectRepository.deleteById(id);
+    public void deleteProjectById(Long id) {
+        projectRepository.delete(getProjectById(id));
     }
 }

@@ -8,7 +8,7 @@ POST http://localhost:8888/api/projects
 Content-Type: application/json
 
 {
-  "title":"Spring",
+  "name":"Spring",
   "description":"Szkolenie ze Springa w ramach Akademii Sztuka Kodu"
 }
 ###
@@ -16,7 +16,7 @@ PUT http://localhost:8888/api/projects/1
 Content-Type: application/json
 
 {
-  "title":"Vaadin",
+  "name":"Vaadin",
   "description":"Zrobić wszystkie tutoriale na stronie vaadin.com"
 }
 ###

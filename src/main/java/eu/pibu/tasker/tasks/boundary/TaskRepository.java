@@ -1,12 +1,9 @@
 package eu.pibu.tasker.tasks.boundary;
 
 import eu.pibu.tasker.tasks.entity.Task;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface TaskRepository {
-    List<Task> findAll();
-    Task getById(Long id);
-    void create(Task task);
-    void deleteById(Long id);
+@Repository
+public interface TaskRepository extends CrudRepository<Task, Long> {
 }

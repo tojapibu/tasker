@@ -1,7 +1,7 @@
-package eu.pibu.tasker.projects.boundary.dto;
+package eu.pibu.tasker.projects.dto;
 
 import eu.pibu.tasker.projects.entity.Project;
-import eu.pibu.tasker.tasks.boundary.dto.TaskResponse;
+import eu.pibu.tasker.tasks.dto.TaskResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;

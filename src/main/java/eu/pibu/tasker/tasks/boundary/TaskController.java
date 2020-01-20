@@ -1,14 +1,13 @@
 package eu.pibu.tasker.tasks.boundary;
 
-import eu.pibu.tasker.tasks.boundary.dto.*;
 import eu.pibu.tasker.tasks.control.TaskService;
+import eu.pibu.tasker.tasks.dto.CreateTaskRequest;
+import eu.pibu.tasker.tasks.dto.TaskResponse;
+import eu.pibu.tasker.tasks.dto.UpdateTaskRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -54,30 +53,5 @@ class TaskController {
         log.info("Delete task with id: {}", id);
         taskService.deleteTaskById(id);
         return ResponseEntity.noContent().build();
-    }
-    @PostMapping(path = "/{id}/attachments")
-    public ResponseEntity<?> addAttachment(@PathVariable Long id, @RequestBody MultipartFile file) {
-        log.info("Upload file: {} to task with id: {}", file.getOriginalFilename(), id);
-        String uuid = taskService.addAttachment(id, file);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{uuid}").buildAndExpand(uuid).toUri();
-        return ResponseEntity.created(location).build();
-    }
-    @GetMapping(path = "/{id}/attachments")
-    public ResponseEntity<?> getAttachments(@PathVariable Long id) {
-        log.info("List all attachments from task with id: {}", id);
-        List<AttachmentResponse> response = taskService.getTaskById(id)
-                .getAttachments().stream()
-                .map(AttachmentResponse::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
-    }
-    @GetMapping(path = "/{id}/attachments/{uuid}")
-    public ResponseEntity<?> getAttachment(@PathVariable Long id, @PathVariable String uuid) {
-        log.info("Download attachment: {} from task with id: {}", uuid, id);
-        DownloadAttachment response = taskService.getAttachment(id, uuid);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.getFilename())
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(response.getResource());
     }
 }

@@ -1,9 +1,9 @@
-package eu.pibu.tasker.projects.boundary.dto;
+package eu.pibu.tasker.tasks.dto;
 
 import lombok.Data;
 
 @Data
-public class CreateProjectRequest {
+public class UpdateTaskRequest {
     private final String title;
     private final String description;
 }
