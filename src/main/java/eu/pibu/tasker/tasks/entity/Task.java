@@ -1,6 +1,7 @@
 package eu.pibu.tasker.tasks.entity;
 
 import eu.pibu.tasker.attachments.entity.Attachment;
+import eu.pibu.tasker.exceptions.NotFoundException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
@@ -32,5 +33,11 @@ public class Task {
     }
     public List<Attachment> getAttachments() {
         return new ArrayList<>(attachments);
+    }
+    public Attachment getAttachmentById(Long id) {
+        return attachments.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Cannot find attachment with id: " + id));
     }
 }

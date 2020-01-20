@@ -12,6 +12,14 @@ Content-Type: application/json
   "description":"Tutaj długi opis zadania testowego"
 }
 ###
+PUT http://localhost:8888/api/tasks/1
+Content-Type: application/json
+
+{
+  "title":"Zmiana",
+  "description":"Opis"
+}
+###
 GET http://localhost:8888/api/tasks/1/attachments
 ###
 POST http://localhost:8888/api/tasks/1/attachments
@@ -23,15 +31,7 @@ Content-Disposition: form-data; name="file"; filename="testfile.txt"
 < C:\Java\Projects\tasker\testfile.txt
 --Tasker
 ###
-GET http://localhost:8888/api/tasks/2/attachments/cebb5c08-3dba-4352-b670-eb5b94fe45ef
-###
-PUT http://localhost:8888/api/tasks/1
-Content-Type: application/json
-
-{
-  "title":"Zmiana",
-  "description":"Opis"
-}
+GET http://localhost:8888/api/tasks/1/attachments/1
 ###
 DELETE http://localhost:8888/api/tasks/1
 ###

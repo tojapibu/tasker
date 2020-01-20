@@ -1,5 +1,6 @@
 package eu.pibu.tasker.projects.entity;
 
+import eu.pibu.tasker.exceptions.NotFoundException;
 import eu.pibu.tasker.tasks.entity.Task;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,5 +33,11 @@ public class Project {
     }
     public List<Task> getTasks() {
         return new ArrayList<>(tasks);
+    }
+    public Task getTaskById(Long id) {
+        return tasks.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Cannot find task with id: " + id));
     }
 }

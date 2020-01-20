@@ -2,9 +2,9 @@ package eu.pibu.tasker.attachments.boundary;
 
 import eu.pibu.tasker.attachments.control.AttachmentService;
 import eu.pibu.tasker.attachments.dto.AttachmentResponse;
+import eu.pibu.tasker.attachments.dto.DownloadResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class AttachmentController {
     @PostMapping
     public ResponseEntity<?> addAttachment(@PathVariable Long taskId, @RequestBody MultipartFile file) {
         log.info("Upload file: {} to task with id: {}", file.getOriginalFilename(), taskId);
-        String uuid = attachmentService.addAttachment(taskId, file);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{uuid}").buildAndExpand(uuid).toUri();
+        Long id = attachmentService.addAttachment(taskId, file);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
         return ResponseEntity.created(location).build();
     }
     @GetMapping
@@ -38,13 +38,13 @@ public class AttachmentController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
     }
-    @GetMapping(path = "/{uuid}")
-    public ResponseEntity<?> getAttachment(@PathVariable Long taskId, @PathVariable String uuid) {
-        log.info("Download attachment: {} from task with id: {}", uuid, taskId);
-        Resource response = attachmentService.getAttachment(taskId, uuid);
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getAttachment(@PathVariable Long taskId, @PathVariable Long id) {
+        log.info("Download attachment with id: {} from task id: {}", id, taskId);
+        DownloadResponse response = attachmentService.getAttachment(taskId, id);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.getFilename())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(response);
+                .body(response.getResource());
     }
 }

@@ -1,6 +1,7 @@
 package eu.pibu.tasker.tasks.control;
 
 import eu.pibu.tasker.Clock;
+import eu.pibu.tasker.attachments.entity.Attachment;
 import eu.pibu.tasker.exceptions.NotFoundException;
 import eu.pibu.tasker.tasks.boundary.TaskRepository;
 import eu.pibu.tasker.tasks.dto.CreateTaskRequest;
@@ -34,6 +35,11 @@ public class TaskService {
     public Long addTask(CreateTaskRequest dto) {
         return taskRepository.save(new Task(dto.getTitle(), dto.getDescription(), clock.time())).getId();
     }
+    public void addAttachment(Long id, Attachment attachment) {
+        Task task = getTaskById(id);
+        task.addAttachment(attachment);
+        taskRepository.save(task);
+    }
     public void updateTask(Long id, UpdateTaskRequest dto) {
         Task task = getTaskById(id);
         task.setTitle(dto.getTitle());
@@ -44,8 +50,5 @@ public class TaskService {
         Task task = getTaskById(id);
         taskRepository.delete(task);
         applicationEventPublisher.publishEvent(new TaskDeleted(task));
-    }
-    public void save(Task task) {
-        taskRepository.save(task);
     }
 }

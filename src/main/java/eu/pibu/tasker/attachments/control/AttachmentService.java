@@ -2,10 +2,10 @@ package eu.pibu.tasker.attachments.control;
 
 import eu.pibu.tasker.Clock;
 import eu.pibu.tasker.TaskerProperties;
+import eu.pibu.tasker.attachments.dto.DownloadResponse;
 import eu.pibu.tasker.attachments.entity.Attachment;
 import eu.pibu.tasker.exceptions.NotFoundException;
 import eu.pibu.tasker.tasks.control.TaskService;
-import eu.pibu.tasker.tasks.entity.Task;
 import eu.pibu.tasker.tasks.events.TaskDeleted;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -68,22 +68,18 @@ public class AttachmentService {
     private void removeAll(List<String> uuids) {
         uuids.forEach(this::remove);
     }
-    public String addAttachment(Long taskId, MultipartFile file) {
+    public Long addAttachment(Long taskId, MultipartFile file) {
         Attachment attachment = new Attachment(file.getOriginalFilename(), clock.time());
-        Task task = taskService.getTaskById(taskId);
-        task.addAttachment(attachment);
-        taskService.save(task);
+        taskService.addAttachment(taskId, attachment);
         write(attachment.getUuid(), file);
-        return attachment.getUuid();
+        return attachment.getId();
     }
     public List<Attachment> getAttachments(Long taskId) {
         return taskService.getTaskById(taskId).getAttachments();
     }
-    public Resource getAttachment(Long taskId, String fileUuid) {
-        Task task = taskService.getTaskById(taskId);
-        //TODO check if task and has attachment in set
-        Resource resource = read(fileUuid);
-        return resource;
+    public DownloadResponse getAttachment(Long taskId, Long fileId) {
+        Attachment attachment = taskService.getTaskById(taskId).getAttachmentById(fileId);
+        return new DownloadResponse(attachment.getFilename(), read(attachment.getUuid()));
     }
     @EventListener
     public void handle(TaskDeleted event) {
